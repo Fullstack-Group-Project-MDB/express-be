@@ -28,12 +28,22 @@ describe('listing routes', () => {
       content: 'Help I lost my dog',
     });
   });
+
   it('POST request to /listings should create a listing', async () => {
     const testObj = { title: 'Test title', content: 'Cool testing content' };
     const res = await request(app).post('/api/v1/listings').send(testObj);
     expect(res.status).toBe(200);
     expect(res.body).toEqual({ id: expect.any(String), ...testObj });
   });
+
+  it('PUT should update post', async () => {
+    const testObj = { title: 'Fake', content: 'Fake post' };
+    const listing = await request(app).post('/api/v1/listings/').send(testObj);
+    const res = await request(app).put(`api/v1/listings/${listing.body.id}`).send({ content: 'Real post' });
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ ...testObj, content: 'Real post' });
+  });
+
   afterAll(() => {
     pool.end();
   });
