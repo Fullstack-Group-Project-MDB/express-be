@@ -25,10 +25,15 @@ describe('listing routes', () => {
     expect(res.body).toEqual({
       id: '1',
       title: 'Lost dog',
-      content: 'Help I lost my dog'
+      content: 'Help I lost my dog',
     });
   });
-
+  it('POST request to /listings should create a listing', async () => {
+    const testObj = { title: 'Test title', content: 'Cool testing content' };
+    const res = await request(app).post('/api/v1/listings').send(testObj);
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ id: expect.any(String), ...testObj });
+  });
   afterAll(() => {
     pool.end();
   });
