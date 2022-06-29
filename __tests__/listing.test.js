@@ -50,6 +50,16 @@ describe('listing routes', () => {
     });
   });
 
+  it('DELETE should delete a post', async () => {
+    const testObj = { title: 'Fake', content: 'Fake post' };
+    const toDelete = await request(app).post('/api/v1/listings').send(testObj);
+    const listing = await request(app).delete(`/api/v1/listings/${toDelete.body.id}`);
+  
+    expect(listing.status).toBe(200);
+    const deleted = await request(app).get(`/api/v1/listings/${toDelete.body.id}`);
+    expect(deleted.body).toBe(null);
+  });
+
   afterAll(() => {
     pool.end();
   });
