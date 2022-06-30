@@ -7,7 +7,7 @@ const mockUser = {
   email: 'mock@dummy.com',
   password: 'password',
 };
-const { email } = mockUser;
+// const { email } = mockUser;
 
 const registerAndLogin = async (userProps = {}) => {
   const password = userProps.password ?? mockUser.password;
@@ -22,6 +22,7 @@ const registerAndLogin = async (userProps = {}) => {
   // ...then sign in
   const { email } = user;
   await agent.post('/api/v1/users/sessions').send({ email, password });
+
   return [agent, user];
 };
 
@@ -32,8 +33,18 @@ describe('listing routes', () => {
 
   it('POST to /users should create a new user', async () => {
     const res = await request(app).post('/api/v1/users').send(mockUser);
+
     expect(res.status).toBe(200);
-    expect(res.body).toEqual({ id: expect.any(String), email });
+    expect(res.body).toEqual({ id: expect.any(String), email: mockUser.email });
+  });
+  it('POST sessions, returns logged in user', async () => {
+    const [agent, user] = await registerAndLogin();
+    const resp = await agent.get('/api/v1/users/me');
+    expect(resp.body).toEqual({
+      ...user,
+      exp: expect.any(Number),
+      iat: expect.any(Number),
+    });
   });
 
   afterAll(() => {
