@@ -12,3 +12,10 @@ INSERT INTO listings (title, content) VALUES
 ('Lost dog', 'Help I lost my dog'),
 ('Breaking News', 'HI!'),
 ('Dogs', 'I found mine.');
+
+DROP TABLE IF EXISTS bulletin_users;
+CREATE TABLE bulletin_users (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    email VARCHAR NOT NULL,
+    password_hash VARCHAR NOT NULL
+);
